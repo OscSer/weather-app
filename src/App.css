@@ -2,6 +2,16 @@
   font-family: "Ubuntu Mono";
   font-size: 18px;
   height: 100%;
+  flex-direction: column;
+}
+
+.cards-container {
+  width: 100%;
+  padding-top: 30px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-direction: row;
 }
 
 .center {
