@@ -1,8 +1,12 @@
 .App {
   font-family: "Ubuntu Mono";
   font-size: 18px;
-  height: 100%;
   flex-direction: column;
+  padding-top: 100px;
+}
+
+.search-container {
+  width: 100%;
 }
 
 .cards-container {
@@ -12,6 +16,11 @@
   align-items: baseline;
   justify-content: center;
   flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.cards-container > .ui.card {
+  margin: 0px 0px 17px 17px;
 }
 
 .center {

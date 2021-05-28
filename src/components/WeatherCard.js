@@ -8,18 +8,18 @@ const CardInfo = ({ description, value }) => (
         <span>{`${description}:`}</span>
         <span className='card__info__value'>{value}</span>
     </div>
-)
+);
 
 const WeatherCard = ({ coords }) => {
     const [data, setData] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
-            const { lat, long } = coords;
-            await fetch(`${process.env.REACT_APP_API_URL}/weather/?lat=${lat}&lon=${long}&units=metric&APPID=${process.env.REACT_APP_API_KEY}`)
+            const { lat, lon } = coords;
+            await fetch(`${process.env.REACT_APP_API_URL}/weather/?lat=${lat}&lon=${lon}&units=metric&APPID=${process.env.REACT_APP_API_KEY}`)
                 .then(result => result.json())
                 .then(json => {
-                    setData(json)
+                    setData(json);
                 });
         }
         fetchData();
@@ -29,7 +29,7 @@ const WeatherCard = ({ coords }) => {
         ? (
             <Card className='card'>
                 <Card.Header className="card__header center">
-                    City: {data.name}
+                    {`${data.name} (${data.sys.country})`}
                 </Card.Header>
                 <Card.Content>
                     <CardInfo description='Day' value={moment().format('dddd')} />
@@ -45,7 +45,7 @@ const WeatherCard = ({ coords }) => {
         : (
             <Segment className='card'>
                 <Dimmer active>
-                    <Loader size='large'>Loading</Loader>
+                    <Loader>Loading</Loader>
                 </Dimmer>
             </Segment>
         )
