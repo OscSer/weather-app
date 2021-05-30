@@ -1,26 +1,35 @@
 .App {
-  font-family: "Ubuntu Mono";
   font-size: 18px;
+  font-family: "Ubuntu Mono";
   flex-direction: column;
-  padding-top: 100px;
 }
 
 .search-container {
-  width: 100%;
+  padding: 70px 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.search-container .ui.input > input {
+  width: 300px;
+}
+
+.refresh-button {
+  margin-left: 20px !important;
 }
 
 .cards-container {
-  width: 100%;
-  padding-top: 30px;
   display: flex;
-  align-items: baseline;
-  justify-content: center;
   flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
   flex-wrap: wrap;
 }
 
 .cards-container > .ui.card {
-  margin: 0px 0px 17px 17px;
+  margin: 0 10px 20px 10px;
 }
 
 .center {
