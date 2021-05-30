@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/OscSer/weather-app/static/css/main.585b29bd.chunk.css",
+    "main.js": "/OscSer/weather-app/static/js/main.73ae1f30.chunk.js",
+    "main.js.map": "/OscSer/weather-app/static/js/main.73ae1f30.chunk.js.map",
+    "runtime-main.js": "/OscSer/weather-app/static/js/runtime-main.d3f6666e.js",
+    "runtime-main.js.map": "/OscSer/weather-app/static/js/runtime-main.d3f6666e.js.map",
+    "static/css/2.0cc44740.chunk.css": "/OscSer/weather-app/static/css/2.0cc44740.chunk.css",
+    "static/js/2.7e47bfdd.chunk.js": "/OscSer/weather-app/static/js/2.7e47bfdd.chunk.js",
+    "static/js/2.7e47bfdd.chunk.js.map": "/OscSer/weather-app/static/js/2.7e47bfdd.chunk.js.map",
+    "static/js/3.33ff7ea2.chunk.js": "/OscSer/weather-app/static/js/3.33ff7ea2.chunk.js",
+    "static/js/3.33ff7ea2.chunk.js.map": "/OscSer/weather-app/static/js/3.33ff7ea2.chunk.js.map",
+    "index.html": "/OscSer/weather-app/index.html",
+    "static/css/2.0cc44740.chunk.css.map": "/OscSer/weather-app/static/css/2.0cc44740.chunk.css.map",
+    "static/css/main.585b29bd.chunk.css.map": "/OscSer/weather-app/static/css/main.585b29bd.chunk.css.map",
+    "static/js/2.7e47bfdd.chunk.js.LICENSE.txt": "/OscSer/weather-app/static/js/2.7e47bfdd.chunk.js.LICENSE.txt",
+    "static/media/semantic.min.css": "/OscSer/weather-app/static/media/outline-icons.ddae9b1b.woff"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d3f6666e.js",
+    "static/css/2.0cc44740.chunk.css",
+    "static/js/2.7e47bfdd.chunk.js",
+    "static/css/main.585b29bd.chunk.css",
+    "static/js/main.73ae1f30.chunk.js"
+  ]
+}
