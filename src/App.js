@@ -1,7 +1,7 @@
 import './App.css';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import WeatherCard from './components/WeatherCard';
-import { Search, Container, Button } from 'semantic-ui-react';
+import { Search, Container, Button, Ref } from 'semantic-ui-react';
 import cities from './utils/cities.json';
 import { filter, escapeRegExp, uniqBy } from 'lodash';
 
@@ -9,6 +9,7 @@ export default function App() {
   const [coords, setCoords] = useState([]);
   const [results, setResults] = useState([]);
   const [value, setValue] = useState('');
+  const searchRef = useRef(null);
 
   useEffect(() => {
     const getCurrentPosition = () => {
@@ -19,7 +20,7 @@ export default function App() {
         }]);
       });
     };
-    const prevCoords = window.localStorage.getItem('coords');
+    const prevCoords = window.localStorage.getItem('weather-app-coords');
     if (prevCoords) {
       setCoords(JSON.parse(prevCoords));
     } else {
@@ -45,33 +46,35 @@ export default function App() {
   }
 
   const onResultSelect = (e, data) => {
-    const newCoords = [data.result.coord, ...coords];
+    const newCoords = [{ ...data.result.coord, key: generateKey() }, ...coords];
     setCoords(newCoords);
-    window.localStorage.setItem('coords', JSON.stringify(newCoords));
+    window.localStorage.setItem('weather-app-coords', JSON.stringify(newCoords));
     clearSearch();
   }
 
   const onButtonClick = () => {
-    setCoords(coords.map(coord => ({
-      ...coord,
-      key: Math.random().toString(36).slice(2)
-    })));
+    setCoords(coords.map(coord => ({ ...coord, key: generateKey() })));
   }
+
+  const generateKey = () => Math.random().toString(36).slice(2);
 
   return (
     <div className="App">
       <Container>
 
         <div className="search-container">
-          <Search
-            input={{ autoFocus: true }}
-            placeholder='Search more cities...'
-            onResultSelect={onResultSelect}
-            onSearchChange={onSearchChange}
-            results={results}
-            value={value}
-            onFocus={clearSearch}
-          />
+          <Ref innerRef={searchRef}>
+            <Search
+              placeholder='Search more cities...'
+              onResultSelect={onResultSelect}
+              onSearchChange={onSearchChange}
+              results={results}
+              value={value}
+              onFocus={clearSearch}
+              ref={searchRef}
+            />
+          </Ref>
+
           <Button
             circular
             color='facebook'
