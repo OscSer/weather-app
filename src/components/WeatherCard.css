@@ -1,10 +1,11 @@
 .card {
     height: 290px;
     width: 290px;
+    min-width: 290px;
 }
 
 .card__header {
-    background-color: #424242;
+    background-color: #304d8a;
     color: #ffffff;
     height: 50px;
     font-size: 22px;

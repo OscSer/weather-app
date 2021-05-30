@@ -2,7 +2,7 @@ import './App.css';
 import React, { useEffect, useState } from "react";
 import WeatherCard from './components/WeatherCard';
 import { Search, Container, Button } from 'semantic-ui-react';
-import cities from './utils/city.list.min.json';
+import cities from './utils/cities.json';
 import { filter, escapeRegExp, uniqBy } from 'lodash';
 
 export default function App() {
@@ -11,12 +11,20 @@ export default function App() {
   const [value, setValue] = useState('');
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      setCoords([{
-        lat: position.coords.latitude,
-        lon: position.coords.longitude
-      }]);
-    });
+    const getCurrentPosition = () => {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        setCoords([{
+          lat: position.coords.latitude,
+          lon: position.coords.longitude
+        }]);
+      });
+    };
+    const prevCoords = window.localStorage.getItem('coords');
+    if (prevCoords) {
+      setCoords(JSON.parse(prevCoords));
+    } else {
+      getCurrentPosition();
+    }
   }, []);
 
   const clearSearch = () => setValue('');
@@ -37,7 +45,9 @@ export default function App() {
   }
 
   const onResultSelect = (e, data) => {
-    setCoords([data.result.coord, ...coords]);
+    const newCoords = [data.result.coord, ...coords];
+    setCoords(newCoords);
+    window.localStorage.setItem('coords', JSON.stringify(newCoords));
     clearSearch();
   }
 
@@ -64,7 +74,7 @@ export default function App() {
           />
           <Button
             circular
-            primary
+            color='facebook'
             size='big'
             className='refresh-button'
             content='Refresh'

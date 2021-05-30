@@ -1,23 +1,26 @@
 .App {
   font-size: 18px;
-  font-family: "Ubuntu Mono";
+  font-family: "Roboto";
   flex-direction: column;
+  padding-bottom: 30px;
 }
 
 .search-container {
-  padding: 70px 0;
+  padding: 70px 10px;
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .search-container .ui.input > input {
-  width: 300px;
+  width: 290px;
 }
 
 .refresh-button {
   margin-left: 20px !important;
+  margin-top: 20px !important;
 }
 
 .cards-container {

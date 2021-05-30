@@ -44,8 +44,8 @@ const WeatherCard = ({ coords }) => {
         )
         : (
             <Segment className='card'>
-                <Dimmer active>
-                    <Loader>Loading</Loader>
+                <Dimmer active inverted>
+                    <Loader inverted size='large'>Loading</Loader>
                 </Dimmer>
             </Segment>
         )
