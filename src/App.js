@@ -9,7 +9,9 @@ export default function App() {
   const [cities, setCities] = useState([]);
   const [results, setResults] = useState([]);
   const [value, setValue] = useState('');
-  const searchRef = useRef(null); //TODO: blur()
+  const [loading, setLoading] = useState(false);
+  const searchRef = useRef(); //TODO: blur()
+  const timeoutRef = useRef()
 
   useEffect(() => {
     const getCurrentPosition = () => {
@@ -23,29 +25,38 @@ export default function App() {
         }]);
       });
     };
-    const prevCities = window.localStorage.getItem('weather-app-cities');
+    const prevCities = window.localStorage.getItem('cities');
     if (prevCities) {
       setCities(JSON.parse(prevCities));
     } else {
       getCurrentPosition();
     }
-  }, []);
+  }, [])
 
   const generateKey = () => Math.random().toString(36).slice(2);
 
-  const handleSearchChange = (e, data) => { //TODO: debounce
+  const handleSearchChange = (e, data) => {
+    clearTimeout(timeoutRef.current)
     setValue(data.value);
-    const regExp = new RegExp(escapeRegExp(data.value), 'i');
-    const isMatch = (city) => regExp.test(city.name);
-    const filteredCities = filter(citiesResults, isMatch)
-      .sort((a, b) => a.name.length - b.name.length)
-      .map(city => ({
-        ...city,
-        title: `${city.name} (${city.country})`
-      }));
-    const uniqCities = uniqBy(filteredCities, 'title')
-      .filter(result => !cities.find(city => city.coords === result.coord));
-    setResults(uniqCities.splice(0, 6));
+    setLoading(true);
+    if (data.value) {
+      timeoutRef.current = setTimeout(() => {
+        const regExp = new RegExp(escapeRegExp(data.value), 'i');
+        const isMatch = (result) => regExp.test(result.name);
+        const filteredResults = filter(citiesResults, isMatch)
+          .sort((a, b) => a.name.length - b.name.length)
+          .map(result => ({
+            ...result,
+            title: `${result.name} (${result.country})`
+          }));
+        const uniqResults = uniqBy(filteredResults, 'title')
+          .filter(result => !cities.find(city => city.coords === result.coord));
+        setResults(uniqResults.splice(0, 6));
+        setLoading(false);
+      }, 500)
+    } else {
+      setLoading(false);
+    }
   }
 
   const handleResultSelect = (e, data) => {
@@ -57,7 +68,7 @@ export default function App() {
       ...cities
     ];
     setCities(newCities);
-    window.localStorage.setItem('weather-app-cities', JSON.stringify(newCities));
+    window.localStorage.setItem('cities', JSON.stringify(newCities));
     setValue('');
   }
 
@@ -83,6 +94,7 @@ export default function App() {
             results={results}
             value={value}
             ref={searchRef}
+            loading={loading}
           />
           <Button
             circular
