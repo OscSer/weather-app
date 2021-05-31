@@ -1,80 +1,89 @@
 import './App.css';
 import React, { useEffect, useState, useRef } from "react";
 import WeatherCard from './components/WeatherCard';
-import { Search, Container, Button, Ref } from 'semantic-ui-react';
-import cities from './utils/cities.json';
-import { filter, escapeRegExp, uniqBy } from 'lodash';
+import { Search, Container, Button } from 'semantic-ui-react';
+import citiesResults from './utils/cities.json';
+import { filter, escapeRegExp, uniqBy, remove } from 'lodash';
 
 export default function App() {
-  const [coords, setCoords] = useState([]);
+  const [cities, setCities] = useState([]);
   const [results, setResults] = useState([]);
   const [value, setValue] = useState('');
-  const searchRef = useRef(null);
+  const searchRef = useRef(null); //TODO: blur()
 
   useEffect(() => {
     const getCurrentPosition = () => {
       navigator.geolocation.getCurrentPosition(function (position) {
-        setCoords([{
-          lat: position.coords.latitude,
-          lon: position.coords.longitude
+        setCities([{
+          coords: {
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+          },
+          key: generateKey()
         }]);
       });
     };
-    const prevCoords = window.localStorage.getItem('weather-app-coords');
-    if (prevCoords) {
-      setCoords(JSON.parse(prevCoords));
+    const prevCities = window.localStorage.getItem('weather-app-cities');
+    if (prevCities) {
+      setCities(JSON.parse(prevCities));
     } else {
       getCurrentPosition();
     }
   }, []);
 
-  const clearSearch = () => setValue('');
+  const generateKey = () => Math.random().toString(36).slice(2);
 
-  const onSearchChange = (e, data) => {
+  const handleSearchChange = (e, data) => { //TODO: debounce
     setValue(data.value);
     const regExp = new RegExp(escapeRegExp(data.value), 'i');
     const isMatch = (city) => regExp.test(city.name);
-    const filteredCities = filter(cities, isMatch)
+    const filteredCities = filter(citiesResults, isMatch)
       .sort((a, b) => a.name.length - b.name.length)
       .map(city => ({
         ...city,
         title: `${city.name} (${city.country})`
       }));
     const uniqCities = uniqBy(filteredCities, 'title')
-      .filter(city => !coords.includes(city.coord));
+      .filter(result => !cities.find(city => city.coords === result.coord));
     setResults(uniqCities.splice(0, 6));
   }
 
-  const onResultSelect = (e, data) => {
-    const newCoords = [{ ...data.result.coord, key: generateKey() }, ...coords];
-    setCoords(newCoords);
-    window.localStorage.setItem('weather-app-coords', JSON.stringify(newCoords));
-    clearSearch();
+  const handleResultSelect = (e, data) => {
+    const newCities = [
+      {
+        coords: { ...data.result.coord },
+        key: generateKey()
+      },
+      ...cities
+    ];
+    setCities(newCities);
+    window.localStorage.setItem('weather-app-cities', JSON.stringify(newCities));
+    setValue('');
   }
 
-  const onButtonClick = () => {
-    setCoords(coords.map(coord => ({ ...coord, key: generateKey() })));
+  const handleRefresh = () => {
+    setCities(cities.map(city => ({ ...city, key: generateKey() })));
   }
 
-  const generateKey = () => Math.random().toString(36).slice(2);
+  const handleCloseAction = (key) => {
+    let newCities = [...cities];
+    remove(newCities, city => city.key === key);
+    setCities(newCities);
+  }
 
   return (
     <div className="App">
       <Container>
 
         <div className="search-container">
-          <Ref innerRef={searchRef}>
-            <Search
-              placeholder='Search more cities...'
-              onResultSelect={onResultSelect}
-              onSearchChange={onSearchChange}
-              results={results}
-              value={value}
-              onFocus={clearSearch}
-              ref={searchRef}
-            />
-          </Ref>
-
+          <Search
+            placeholder='Search more cities...'
+            onResultSelect={handleResultSelect}
+            onSearchChange={handleSearchChange}
+            results={results}
+            value={value}
+            ref={searchRef}
+          />
           <Button
             circular
             color='facebook'
@@ -82,15 +91,17 @@ export default function App() {
             className='refresh-button'
             content='Refresh'
             icon='refresh'
-            onClick={onButtonClick}
+            onClick={handleRefresh}
           />
         </div>
 
         <div className='cards-container'>
-          {coords.length > 0 && coords.map(coord => (
+          {cities.length > 0 && cities.map(city => (
             <WeatherCard
-              key={`${coord.lat}-${coord.lon}-${coord.key}`}
-              coords={coord}
+              id={city.key}
+              key={city.key}
+              coords={city.coords}
+              onCloseAction={handleCloseAction}
             />
           ))}
         </div>

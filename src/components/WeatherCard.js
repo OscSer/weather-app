@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import moment from 'moment';
 import './WeatherCard.css';
-import { Dimmer, Loader, Segment, Card } from 'semantic-ui-react';
+import { Dimmer, Loader, Segment, Card, Icon } from 'semantic-ui-react';
 
 const CardInfo = ({ description, value }) => (
     <div className='card__info'>
@@ -10,7 +10,7 @@ const CardInfo = ({ description, value }) => (
     </div>
 );
 
-const WeatherCard = ({ coords }) => {
+const WeatherCard = ({ id, coords, onCloseAction }) => {
     const [data, setData] = useState({});
 
     useEffect(() => {
@@ -23,13 +23,22 @@ const WeatherCard = ({ coords }) => {
                 });
         }
         fetchData();
-    }, [coords])
+    }, [coords]);
+
+    const handleCloseAction = () => onCloseAction(id);
 
     return data.main
         ? (
             <Card className='card'>
-                <Card.Header className="card__header center">
-                    {`${data.name} (${data.sys.country})`}
+                <Card.Header className="card__header">
+                    <span>
+                        {`${data.name} (${data.sys.country})`}
+                    </span>
+                    <Icon
+                        className='card__icon'
+                        name='remove'
+                        onClick={handleCloseAction}
+                    />
                 </Card.Header>
                 <Card.Content>
                     <CardInfo description='Day' value={moment().format('dddd')} />

@@ -1,6 +1,6 @@
 # Weather App
 
-Simple application made in React to consult weather data from different cities.
+Simple application made in React to consult weather data from different cities.\
 Live demo: [oscser.github.io/weather-app](https://oscser.github.io/weather-app/)
 
 ## Available Scripts
