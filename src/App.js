@@ -2,7 +2,7 @@ import './App.css';
 import React, { useEffect, useState, useRef } from "react";
 import WeatherCard from './components/WeatherCard';
 import { Search, Container, Button } from 'semantic-ui-react';
-import citiesResults from './utils/cities.json';
+import citiesData from './utils/cities.json';
 import { filter, escapeRegExp, uniqBy, remove } from 'lodash';
 
 export default function App() {
@@ -43,7 +43,7 @@ export default function App() {
       timeoutRef.current = setTimeout(() => {
         const regExp = new RegExp(escapeRegExp(data.value), 'i');
         const isMatch = (result) => regExp.test(result.name);
-        const filteredResults = filter(citiesResults, isMatch)
+        const filteredResults = filter(citiesData, isMatch)
           .sort((a, b) => a.name.length - b.name.length)
           .map(result => ({
             ...result,
@@ -80,6 +80,7 @@ export default function App() {
     let newCities = [...cities];
     remove(newCities, city => city.key === key);
     setCities(newCities);
+    window.localStorage.setItem('cities', JSON.stringify(newCities));
   }
 
   return (
