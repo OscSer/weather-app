@@ -10,8 +10,8 @@ export default function App() {
   const [results, setResults] = useState([]);
   const [value, setValue] = useState('');
   const [loading, setLoading] = useState(false);
-  const searchRef = useRef(); //TODO: blur()
-  const timeoutRef = useRef()
+  const buttonRef = useRef();
+  const timeoutRef = useRef();
 
   useEffect(() => {
     const getCurrentPosition = () => {
@@ -25,9 +25,9 @@ export default function App() {
         }]);
       });
     };
-    const prevCities = window.localStorage.getItem('cities');
-    if (prevCities) {
-      setCities(JSON.parse(prevCities));
+    const prevCities = JSON.parse(window.localStorage.getItem('cities'));
+    if (prevCities && prevCities.length > 0) {
+      setCities(prevCities);
     } else {
       getCurrentPosition();
     }
@@ -43,14 +43,17 @@ export default function App() {
       timeoutRef.current = setTimeout(() => {
         const regExp = new RegExp(escapeRegExp(data.value), 'i');
         const isMatch = (result) => regExp.test(result.name);
-        const filteredResults = filter(citiesData, isMatch)
+        const mappedResults = filter(citiesData, isMatch)
           .sort((a, b) => a.name.length - b.name.length)
           .map(result => ({
             ...result,
             title: `${result.name} (${result.country})`
           }));
-        const uniqResults = uniqBy(filteredResults, 'title')
-          .filter(result => !cities.find(city => city.coords === result.coord));
+        const uniqResults = uniqBy(mappedResults, 'title')
+          .filter(result => !cities.find(city => {
+            return city.coords.lat === result.coord.lat
+              && city.coords.lon === result.coord.lon
+          }));
         setResults(uniqResults.splice(0, 6));
         setLoading(false);
       }, 500)
@@ -60,6 +63,7 @@ export default function App() {
   }
 
   const handleResultSelect = (e, data) => {
+    setValue('');
     const newCities = [
       {
         coords: { ...data.result.coord },
@@ -69,7 +73,8 @@ export default function App() {
     ];
     setCities(newCities);
     window.localStorage.setItem('cities', JSON.stringify(newCities));
-    setValue('');
+    setResults([]);
+    buttonRef.current.focus();
   }
 
   const handleRefresh = () => {
@@ -94,7 +99,6 @@ export default function App() {
             onSearchChange={handleSearchChange}
             results={results}
             value={value}
-            ref={searchRef}
             loading={loading}
           />
           <Button
@@ -105,6 +109,7 @@ export default function App() {
             content='Refresh'
             icon='refresh'
             onClick={handleRefresh}
+            ref={buttonRef}
           />
         </div>
 
